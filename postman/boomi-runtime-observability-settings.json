@@ -1,0 +1,51 @@
+{
+  "runtimeId": "",
+  "generalSettings": {
+    "@type": "GeneralSettings",
+    "enabled": true,
+    "observabilityEndpoint": {
+      "@type": "ObservabilityEndpoint",
+      "url": "http://alloy:4317",
+      "authentication": {
+        "@type": "ObservabilityEndpointAuthentication",
+        "authType": "NONE"
+      }
+    }
+  },
+  "logSettings": {
+    "@type": "LogSettings",
+    "enabled": true,
+    "overrideGeneralObservabilityEndpoint": false,
+    "logTimeoutSeconds": 30,
+    "logBatchSize": 512,
+    "logFlushInterval": 1000,
+    "logMaxQueueSize": 2048,
+    "logFilterEnabled": true,
+    "logFilterTypes": [
+      "RUNTIME",
+      "PROCESS",
+      "DOCUMENT",
+      "RUNNER",
+      "WORKER",
+      "BROWSER"
+    ]
+  },
+  "metricSettings": {
+    "@type": "MetricSettings",
+    "enabled": true,
+    "overrideGeneralObservabilityEndpoint": false,
+    "metricTimeoutSeconds": 30,
+    "metricIntervalSeconds": 30
+  },
+  "traceSettings": {
+    "@type": "TraceSettings",
+    "enabled": true,
+    "traceBatchSize": 0,
+    "traceFlushInterval": 100,
+    "traceTimeoutSeconds": 0,
+    "traceMaxQueueSize": 0,
+    "processFilterEnabled": false,
+    "processFilterIds": [ ]
+  },
+  "shouldRestartPlugin": true
+}

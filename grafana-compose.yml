@@ -1,0 +1,84 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    user: "1000:1000"
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=15d"
+      - "--web.enable-remote-write-receiver"
+    ports:
+      - "9091:9090"
+    networks:
+      - observability
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: unless-stopped
+    user: "1000:1000"
+    volumes:
+      - ./loki/loki.yml:/etc/loki/loki.yml:ro
+      - ./loki:/var/loki
+    command: 
+      - -config.expand-env=true
+      - -config.file=/etc/loki/loki.yml
+    ports:
+      - "3100:3100"
+    networks:
+      - observability
+
+  consul:
+    image: hashicorp/consul:latest
+    container_name: consul
+    command: agent -server -bootstrap-expect=1 -data-dir=/consul/data -client=0.0.0.0
+    ports:
+      - "8500:8500"
+    volumes:
+      - ./consul:/consul/data
+    networks:
+      - observability
+
+  tempo:
+    image: grafana/tempo:main-0230502
+    container_name: tempo
+    restart: unless-stopped
+    user: "1000:1000"
+    volumes:
+      - ./tempo/tempo.yml:/etc/tempo/tempo.yml:ro
+      - ./tempo:/var/tempo
+    command: [ "-config.file=/etc/tempo/tempo.yml" ]
+    ports:
+      - "3200:3200"   # Tempo HTTP API / Tempo‑query
+      - "4317:4317"   # OTLP gRPC (instrumented apps send traces here)
+      - "4318:4318"   # OTLP HTTP (instrumented apps send traces here)
+    networks:
+      - observability
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    user: 1000:1000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_HTTP_PORT=3000
+    volumes:
+      - ./grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - observability
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+  
+networks:
+  observability:
+    driver: bridge

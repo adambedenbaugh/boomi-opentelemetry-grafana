@@ -1,0 +1,23 @@
+ingester:
+  lifecycler:
+    address: 127.0.0.1
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+    num_tokens: 128
+    join_after: 0s
+    min_ready_duration: 0s
+server:
+  http_listen_port: 3200
+  grpc_listen_port: 4317
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo/traces
+
+compactor:
+  compaction:
+    block_retention: 48h

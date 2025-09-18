@@ -1,0 +1,49 @@
+livedebugging {
+  enabled = true
+}
+
+otelcol.receiver.otlp "default" {
+  grpc { endpoint = "0.0.0.0:4317" }
+  http { endpoint = "0.0.0.0:4318" }
+
+  output {
+                logs    = [otelcol.exporter.loki.to_loki.input]
+                metrics = [otelcol.exporter.prometheus.to_prom.input]
+                traces  = [otelcol.processor.batch.traces.input]
+        }
+}
+
+prometheus.remote_write "prom" {
+  endpoint {
+        url = "http://" + sys.env("OBS_HOST") + ":9090/api/v1/write"
+  }
+}
+
+otelcol.exporter.prometheus "to_prom" {
+        forward_to = [prometheus.remote_write.prom.receiver]
+}
+
+
+loki.write "grafana_loki" {
+  endpoint{
+        url  = "http://" + sys.env("OBS_HOST") + ":3100/loki/api/v1/push"
+  }
+}
+
+otelcol.exporter.loki "to_loki" {
+        forward_to = [loki.write.grafana_loki.receiver]
+}
+
+otelcol.processor.batch "traces" {
+        output {
+                traces = [otelcol.exporter.otlp.tempo.input]
+        }
+}
+
+
+otelcol.exporter.otlp "tempo" {
+        client {
+                endpoint = sys.env("OBS_HOST") + ":4317"
+                tls {insecure = true}
+        }
+}
