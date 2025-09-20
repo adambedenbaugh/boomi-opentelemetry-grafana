@@ -15,7 +15,7 @@ otelcol.receiver.otlp "default" {
 
 prometheus.remote_write "prom" {
   endpoint {
-        url = "http://" + sys.env("OBS_HOST") + ":9090/api/v1/write"
+        url = "http://" + sys.env("PROMETHEUS_HOSTNAME") + ":9090/api/v1/write"
   }
 }
 
@@ -26,7 +26,7 @@ otelcol.exporter.prometheus "to_prom" {
 
 loki.write "grafana_loki" {
   endpoint{
-        url  = "http://" + sys.env("OBS_HOST") + ":3100/loki/api/v1/push"
+        url  = "http://" + sys.env("LOKI_HOSTNAME") + ":3100/loki/api/v1/push"
   }
 }
 
@@ -43,7 +43,7 @@ otelcol.processor.batch "traces" {
 
 otelcol.exporter.otlp "tempo" {
         client {
-                endpoint = sys.env("OBS_HOST") + ":4317"
+                endpoint = sys.env("TEMPO_HOSTNAME") + ":4317"
                 tls {insecure = true}
         }
 }

@@ -1,29 +1,24 @@
-version: "3.9"
 services:
   # Boomi Runtime
   runtime:
     image: boomi/atom:release
-    container_name: ${NODE_NAME}
+    container_name: ${LOCALHOST_ID}
     user: "1000:1000"
     restart: unless-stopped
-    hostname: ${NODE_NAME}
+    hostname: ${LOCALHOST_ID}
     environment:
       BOOMI_ACCOUNTID: ${BOOMI_ACCOUNTID}
       BOOMI_ENVIRONMENTID: ${BOOMI_ENVIRONMENTID}
       INSTALL_TOKEN: ${INSTALL_TOKEN}
       BOOMI_ATOMNAME: ${ATOM_NAME}
-      ATOM_LOCALHOSTID: ${NODE_NAME}
-      LOCAL_PATH: "/opt/boomi"
-      JAVA_OPTS: "-Xms2048m -Xmx4096m -Dboomi.containerized=true"
+      ATOM_LOCALHOSTID: ${LOCALHOST_ID}
+      ATOM_VMOPTIONS_OVERRIDES: "-Xms1g|-Xmx2g"
     ports:
       - "9090:9090"
-      - "7800-7900:7800-7900"
-      - "61717:61717"
     volumes:
-      - ./boomi/local:/opt/boomi
-      - ./boomi/share:/mnt/boomi
+      - ./boomi:/mnt/boomi
     networks:
-      - otel_network
+      - observability
 
   # Alloy - Sink for Boomi OpenTelemetry data
   alloy:
@@ -32,19 +27,20 @@ services:
     restart: unless-stopped
     environment:
       HOSTNAME: alloy
-      OBS_HOST: 172.31.19.58
+      TEMPO_HOSTNAME: tempo
+      LOKI_HOSTNAME: loki
+      PROMETHEUS_HOSTNAME: prometheus
     volumes:
-      - ./alloy/alloy.yaml:/etc/alloy/config.alloy:ro
-      - ./alloy:/var/lib/alloy/data
+      - ./alloy/alloy.yml:/etc/alloy/config.alloy:ro
     command:
       - run
       - --storage.path=/var/lib/alloy/data
       - --server.http.listen-addr=0.0.0.0:12345
       - /etc/alloy/config.alloy
     networks:
-      - otel_network
-    ports:
-      - "12345:12345"
+      - observability
+    # ports:
+    #   - "12345:12345"
 
   # Prometheus
   prometheus:
@@ -59,8 +55,8 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.retention.time=15d"
       - "--web.enable-remote-write-receiver"
-    ports:
-      - "9091:9090"
+    # ports:
+    #   - "9090:9090"
     networks:
       - observability
 
@@ -68,16 +64,16 @@ services:
   loki:
     image: grafana/loki:latest
     container_name: loki
-    restart: unless-stopped
     user: "1000:1000"
+    restart: unless-stopped
     volumes:
       - ./loki/loki.yml:/etc/loki/loki.yml:ro
       - ./loki:/var/loki
     command:
       - -config.expand-env=true
       - -config.file=/etc/loki/loki.yml
-    ports:
-      - "3100:3100"
+    # ports:
+    #   - "3100:3100"
     networks:
       - observability
 
@@ -85,6 +81,7 @@ services:
   consul:
     image: hashicorp/consul:latest
     container_name: consul
+    user: "1000:1000"
     command: agent -server -bootstrap-expect=1 -data-dir=/consul/data -client=0.0.0.0
     ports:
       - "8500:8500"
@@ -103,10 +100,10 @@ services:
       - ./tempo/tempo.yml:/etc/tempo/tempo.yml:ro
       - ./tempo:/var/tempo
     command: [ "-config.file=/etc/tempo/tempo.yml" ]
-    ports:
-      - "3200:3200"
-      - "4317:4317"
-      - "4318:4318"
+    # ports:
+    #   - "3200:3200"
+    #   - "4317:4317"
+    #   - "4318:4318"
     networks:
       - observability
 
@@ -133,6 +130,5 @@ services:
 
 
 networks:
-  otel_network:
   observability:
     driver: bridge

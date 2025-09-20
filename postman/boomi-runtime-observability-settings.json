@@ -14,21 +14,12 @@
   },
   "logSettings": {
     "@type": "LogSettings",
-    "enabled": true,
-    "overrideGeneralObservabilityEndpoint": false,
+    "enabled": true, 
     "logTimeoutSeconds": 30,
     "logBatchSize": 512,
     "logFlushInterval": 1000,
     "logMaxQueueSize": 2048,
-    "logFilterEnabled": true,
-    "logFilterTypes": [
-      "RUNTIME",
-      "PROCESS",
-      "DOCUMENT",
-      "RUNNER",
-      "WORKER",
-      "BROWSER"
-    ]
+    "logFilterEnabled": false
   },
   "metricSettings": {
     "@type": "MetricSettings",
@@ -40,12 +31,12 @@
   "traceSettings": {
     "@type": "TraceSettings",
     "enabled": true,
+    "overrideGeneralObservabilityEndpoint": false,
     "traceBatchSize": 0,
     "traceFlushInterval": 100,
     "traceTimeoutSeconds": 0,
     "traceMaxQueueSize": 0,
-    "processFilterEnabled": false,
-    "processFilterIds": [ ]
+    "processFilterEnabled": false
   },
   "shouldRestartPlugin": true
 }

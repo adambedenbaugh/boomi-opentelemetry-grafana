@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "24247592-9766-492d-aa06-c8b239adf3d4",
+		"name": "Boomi RuntimeObservabilitySettings",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8424683",
+		"_collection_link": "https://universal-sunset-382092.postman.co/workspace/Boomi-Demo~fbf9c379-62b7-4c30-884e-12b80a96b5c0/collection/8424683-24247592-9766-492d-aa06-c8b239adf3d4?action=share&source=collection_link&creator=8424683"
+	},
+	"item": [
+		{
+			"name": "Modifies or updates a RuntimeObservabilitySettings object",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"runtimeId\": \"{{atomId}}\",\r\n  \"generalSettings\": {\r\n    \"@type\": \"GeneralSettings\",\r\n    \"enabled\": true,\r\n    \"observabilityEndpoint\": {\r\n      \"@type\": \"ObservabilityEndpoint\",\r\n      \"url\": \"http://alloy:4317\",\r\n      \"authentication\": {\r\n        \"@type\": \"ObservabilityEndpointAuthentication\",\r\n        \"authType\": \"NONE\"\r\n      }\r\n    }\r\n  },\r\n  \"logSettings\": {\r\n    \"@type\": \"LogSettings\",\r\n    \"enabled\": true, \r\n    \"logTimeoutSeconds\": 30,\r\n    \"logBatchSize\": 512,\r\n    \"logFlushInterval\": 1000,\r\n    \"logMaxQueueSize\": 2048,\r\n    \"logFilterEnabled\": false\r\n  },\r\n  \"metricSettings\": {\r\n    \"@type\": \"MetricSettings\",\r\n    \"enabled\": true,\r\n    \"overrideGeneralObservabilityEndpoint\": false,\r\n    \"metricTimeoutSeconds\": 30,\r\n    \"metricIntervalSeconds\": 30\r\n  },\r\n  \"traceSettings\": {\r\n    \"@type\": \"TraceSettings\",\r\n    \"enabled\": true,\r\n    \"overrideGeneralObservabilityEndpoint\": false,\r\n    \"traceBatchSize\": 0,\r\n    \"traceFlushInterval\": 100,\r\n    \"traceTimeoutSeconds\": 0,\r\n    \"traceMaxQueueSize\": 0,\r\n    \"processFilterEnabled\": false\r\n  },\r\n  \"shouldRestartPlugin\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.boomi.com/api/rest/v1/{{accountId}}/RuntimeObservabilitySettings/:id",
+					"protocol": "https",
+					"host": [
+						"api",
+						"boomi",
+						"com"
+					],
+					"path": [
+						"api",
+						"rest",
+						"v1",
+						"{{accountId}}",
+						"RuntimeObservabilitySettings",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{atomId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "ADD_USERNAME",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "atomId",
+			"value": ""
+		},
+		{
+			"key": "accountId",
+			"value": ""
+		}
+	]
+}

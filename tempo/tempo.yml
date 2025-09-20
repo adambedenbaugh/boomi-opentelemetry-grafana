@@ -1,23 +1,51 @@
-ingester:
-  lifecycler:
-    address: 127.0.0.1
-    ring:
-      kvstore:
-        store: inmemory
-      replication_factor: 1
-    num_tokens: 128
-    join_after: 0s
-    min_ready_duration: 0s
+auth_enabled: false
 server:
   http_listen_port: 3200
-  grpc_listen_port: 4317
+  grpc_listen_port: 9095
 
-storage:
-  trace:
-    backend: local
-    local:
-      path: /var/tempo/traces
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+  log_received_spans:
+    enabled: false
+
+ingester:
+  max_block_bytes: 5_242_880
 
 compactor:
   compaction:
     block_retention: 48h
+
+storage:
+  trace:
+    backend: local
+    wal:
+      path: /var/tempo/ttsb_wal
+    local:
+      path: /var/tempo/traces
+    pool:
+      max_workers: 100
+      queue_depth: 10000
+
+overrides:
+  metrics_generator_processors:
+    - span-metrics
+    - service-graphs
+    - local-blocks
+
+metrics_generator:
+  storage:
+    path: /var/tempo/storage
+  traces_storage:
+    path: /var/tempo/traces_storage
+  processor:
+    span_metrics:
+    service_graphs:
+    local_blocks:
+      flush_to_storage: false
+      filter_server_spans: false
