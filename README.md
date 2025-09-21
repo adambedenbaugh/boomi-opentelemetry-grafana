@@ -30,7 +30,6 @@ This repository should be used as a reference demo and not production ready.
 	cd boomi-opentelemetry-grafana
 	# Ensure correct permissions for container
 	sudo chmod -R 775 ./
-	sudo chmod -r 777 ./alloy
 	sudo chown -R 1000:1000 ./
 	```
 2. Edit the `.env` file with your values. 

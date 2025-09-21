@@ -3,7 +3,6 @@ services:
   runtime:
     image: boomi/atom:release
     container_name: ${LOCALHOST_ID}
-    user: "1000:1000"
     restart: unless-stopped
     hostname: ${LOCALHOST_ID}
     environment:
