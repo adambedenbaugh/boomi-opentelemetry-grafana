@@ -15,7 +15,7 @@ otelcol.receiver.otlp "default" {
 
 prometheus.remote_write "prom" {
   endpoint {
-        url = "http://" + sys.env("PROMETHEUS_HOSTNAME") + ":9090/api/v1/write"
+        url = "http://" + sys.env("PROMETHEUS_HOSTNAME") + ":9089/api/v1/write"
   }
 }
 

@@ -1,0 +1,47 @@
+services:
+  # Boomi Runtime
+  runtime:
+    image: boomi/atom:release
+    container_name: ${LOCALHOST_ID}
+    restart: unless-stopped
+    hostname: ${LOCALHOST_ID}
+    environment:
+      BOOMI_ACCOUNTID: ${BOOMI_ACCOUNTID}
+      BOOMI_ENVIRONMENTID: ${BOOMI_ENVIRONMENTID}
+      INSTALL_TOKEN: ${INSTALL_TOKEN}
+      BOOMI_ATOMNAME: ${ATOM_NAME}
+      ATOM_LOCALHOSTID: ${LOCALHOST_ID}
+      ATOM_VMOPTIONS_OVERRIDES: "-Xms1g|-Xmx2g"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./boomi:/mnt/boomi
+    networks:
+      - boomi
+
+  # Alloy - Sink for Boomi OpenTelemetry data
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+    environment:
+      HOSTNAME: alloy
+      TEMPO_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
+      LOKI_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
+      PROMETHEUS_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
+    ports:
+      - "12345:12345"
+    volumes:
+      - ./alloy/alloy.yml:/etc/alloy/config.alloy:ro
+    command:
+      - run
+      - --storage.path=/var/lib/alloy/data
+      - --server.http.listen-addr=0.0.0.0:12345
+      - /etc/alloy/config.alloy
+    networks:
+      - boomi
+
+
+networks:
+  boomi:
+    driver: bridge
