@@ -10,7 +10,8 @@ This repository provides a Docker Compose-based observability stack for a Boomi 
 - **Grafana** for visualization and dashboards
 - **Alloy** for OpenTelemetry pipeline and data forwarding
 
-This repository should be used as a reference demo and not production ready. 
+> [!WARNING]
+> This repository should be used as a reference demo and is not production-ready. Prometheus, Loki, and Tempo are known to use high CPU resources. In a production environment, Prometheus, Loki, Tempo, and Grafana should be deployed on separate servers. The Boomi runtime and Grafana Alloy are recommended to be deployed on separate servers from the other telemetry agents.
 
 ## Directory Structure
 
