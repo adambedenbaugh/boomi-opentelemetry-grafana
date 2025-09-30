@@ -31,6 +31,9 @@ services:
       PROMETHEUS_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
     ports:
       - "12345:12345"
+    extra_hosts:
+      # This line is only for the demo install to resolve observability to the docker host
+      - "observability:host-gateway"  
     volumes:
       - ./alloy/alloy.yml:/etc/alloy/config.alloy:ro
     command:
