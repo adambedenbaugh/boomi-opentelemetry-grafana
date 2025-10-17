@@ -10,7 +10,7 @@ services:
       - ./prometheus:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.retention.time=15d"
+      - "--storage.tsdb.retention.time=14d"
       - "--web.enable-remote-write-receiver"
     ports:
       - "9089:9090"
