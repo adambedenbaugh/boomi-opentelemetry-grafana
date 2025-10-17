@@ -62,3 +62,30 @@ pyroscope.write "grafana" {
     url = "http://" + sys.env("PYROSCOPE_HOSTNAME") + ":4040"
   }
 }
+
+// Node/System metrics collection using node_exporter
+prometheus.exporter.unix "system_metrics" {
+  include_exporter_metrics = true
+  disable_collectors       = ["mdadm"]
+}
+
+prometheus.scrape "system_metrics" {
+  targets = prometheus.exporter.unix.system_metrics.targets
+  forward_to = [prometheus.remote_write.prom.receiver]
+  scrape_interval = "15s"
+  
+  // Add labels to identify the host
+  job_name = "node-exporter"
+}
+
+// Docker container metrics (if running on Docker host)
+prometheus.exporter.cadvisor "container_metrics" {
+  docker_host = "unix:///var/run/docker.sock"
+}
+
+prometheus.scrape "container_metrics" {
+  targets = prometheus.exporter.cadvisor.container_metrics.targets
+  forward_to = [prometheus.remote_write.prom.receiver]
+  scrape_interval = "15s"
+  job_name = "cadvisor"
+}
