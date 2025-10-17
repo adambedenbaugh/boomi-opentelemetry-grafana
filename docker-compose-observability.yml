@@ -51,6 +51,24 @@ services:
     networks:
       - observability
 
+  # Pyroscope
+  pyroscope:
+    image: grafana/pyroscope:latest
+    container_name: pyroscope
+    restart: unless-stopped
+    environment:
+      - PYROSCOPE_LOG_LEVEL=info
+      - PYROSCOPE_SERVER_HTTP_LISTEN_PORT=4040
+    ports:
+      - "4040:4040"
+    volumes:
+      - ./pyroscope:/data
+    command: 
+      - "--server.http-listen-port=4040"
+      - "--storage.path=/data"
+    networks:
+      - observability
+
   # Grafana
   grafana:
     image: grafana/grafana:latest
@@ -71,6 +89,7 @@ services:
       - prometheus
       - loki
       - tempo
+      - pyroscope
 
 
 networks:

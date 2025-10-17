@@ -13,3 +13,8 @@ prometheus/*
 
 tempo/*
 !tempo/tempo.yaml
+
+pyroscope/*
+!pyroscope/config.yml
+
+.env

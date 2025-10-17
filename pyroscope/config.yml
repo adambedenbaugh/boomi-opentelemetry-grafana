@@ -1,0 +1,53 @@
+# Pyroscope Configuration for Grafana Pyroscope
+# Minimal working configuration
+
+# Server configuration
+server:
+  http_listen_port: 4040
+  grpc_listen_port: 4041
+  log_level: info
+
+# Memberlist configuration for clustering (single node setup)
+memberlist:
+  join_members: []
+
+# Storage configuration
+storage:
+  backend: filesystem
+  filesystem:
+    dir: /var/lib/pyroscope
+
+# Retention configuration
+retention_policy:
+  # Keep profiles for 7 days
+  ".*": 168h
+
+# Ingester configuration
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+    num_tokens: 128
+    heartbeat_timeout: 1m
+    join_after: 0s
+
+# Distributor configuration  
+distributor:
+  ring:
+    kvstore:
+      store: inmemory
+
+# Querier configuration
+querier:
+  max_concurrent: 20
+
+# Compactor configuration
+compactor:
+  data_dir: /var/lib/pyroscope/compactor
+  compaction_interval: 15m
+
+# Disable analytics
+analytics:
+  reporting_enabled: false

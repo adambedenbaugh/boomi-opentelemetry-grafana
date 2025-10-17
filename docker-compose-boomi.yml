@@ -11,7 +11,9 @@ services:
       INSTALL_TOKEN: ${INSTALL_TOKEN}
       BOOMI_ATOMNAME: ${ATOM_NAME}
       ATOM_LOCALHOSTID: ${LOCALHOST_ID}
-      ATOM_VMOPTIONS_OVERRIDES: "-Xms1g|-Xmx2g"
+      ATOM_VMOPTIONS_OVERRIDES: "-Xms1g|-Xmx2g|-javaagent:/mnt/boomi/pyroscope/agent-2.1.2.jar"
+      PYROSCOPE_APPLICATION_NAME: boomi
+      PYROSCOPE_SERVER_ADDRESS: http://alloy:4040
     ports:
       - "9090:9090"
     volumes:
@@ -29,6 +31,7 @@ services:
       TEMPO_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
       LOKI_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
       PROMETHEUS_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
+      PYROSCOPE_HOSTNAME: ${OBSERVABILITY_HOSTNAME}
     ports:
       - "12345:12345"
     extra_hosts:
