@@ -1,0 +1,15 @@
+# Ignore application installs in directories except for specific config files
+boomi/*
+!boomi/pyroscope
+
+grafana/*
+!grafana/init
+
+loki/*
+!loki/loki.yml
+
+prometheus/*
+!prometheus/prometheus.yml
+
+tempo/*
+!tempo/tempo.yaml
